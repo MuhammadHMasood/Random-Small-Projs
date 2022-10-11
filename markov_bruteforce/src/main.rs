@@ -1,8 +1,11 @@
 use std::iter::{zip, Zip};
 use std::collections::HashMap;
 use rand::Rng;
+use std::time::*;
 
 const DLIST: [Direction; 4] = [Direction::Up, Direction::Down, Direction::Left, Direction::Right];
+
+const DLIST2: [[i32; 2]; 4] = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 
 macro_rules! add_vec{
        ($a:expr,$b:expr)=>{
@@ -26,12 +29,18 @@ fn main() {
     //print!("{:?}", z);
     //assert_eq!([0, 0], x)
     let mut david: DrunkMan = DrunkMan::new();
-    //let mut i = 0;
+    let mut i = 0;
+
+    let now = Instant::now();
+    
     while (!david.random_walk())  {
         //println!("{:?}", david.pos);
-        //i += 1;
-        //if (i > 100) {break}
+        i += 1;
+        if (i > 1000000) {break}
     }
+    let elapsed_time = now.elapsed();
+    println!("Running random_walk() took {} milliseconds.", elapsed_time.as_millis());
+
     println!("{:?}",david.pos_history)
 }
 
@@ -68,7 +77,7 @@ fn add_vec(z: Zip<[i32; 2], [i32; 2]>) -> Vec<i32> {
 impl DrunkMan {
     fn new() -> DrunkMan {
         let mut x = DrunkMan {
-            pos: [3, 3],
+            pos: [100, 100],
             pos_history: HashMap::new(),
             origin: [0, 0]
         };
@@ -84,9 +93,24 @@ impl DrunkMan {
         self.pos_history.insert(transform, self.pos_history.get(&transform).ok_or_else(|| 0).unwrap() + 1);
         self.pos = add_vec!(self.pos,d2c(transform));
 
+        
+
         //zip(self.pos,d2c(DLIST[rand::thread_rng().gen_range(0..4)]))
         //    .map(|(x,y)| x+y)
         //    .collect();
+
+        if self.pos == self.origin {
+            return true;
+        }
+        return false;
+    }
+
+    fn random_walk_faster(&mut self) -> bool {
+        let transform = DLIST2[rand::thread_rng().gen_range(0..4)];
+        //self.pos = zip(self.pos, d2c(transform)).map(|(x, y)| x+y).collect::<Vec<i32>>().try_into().unwrap();
+        
+        self.pos[0] += transform[0];
+        self.pos[1] += transform[1];
 
         if self.pos == self.origin {
             return true;

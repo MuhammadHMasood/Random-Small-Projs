@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":[["DLIST",""],["DLIST2",""]],"enum":[["Direction",""]],"fn":[["add_vec",""],["d2c",""],["main",""]],"macro":[["add_vec",""]],"struct":[["DrunkMan",""]]};
